@@ -14,5 +14,14 @@ jobs:
 
     - name: Build
       run: swift build -v
-    - name: Run tests
+    - name: Run unit tests
       run: swift test -v
+    - name: Run integration tests
+      run: ./build_then_upload.sh "nightly"
+      env:
+        PUBLISH_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
+    - name: Upload stable binary
+      run: ./build_then_upload.sh $GITHUB_REF
+      env:
+        PUBLISH_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
+      if: contains(github.ref, 'tags/v')
