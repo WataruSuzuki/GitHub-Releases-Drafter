@@ -21,7 +21,9 @@ jobs:
       env:
         PUBLISH_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
     - name: Upload stable binary
-      run: ./build_then_upload.sh $GITHUB_REF
+      run: |
+        VERSION=`echo ${GITHUB_REF//refs\/tags\//}`
+        ./build_then_upload.sh $VERSION
       env:
         PUBLISH_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
       if: contains(github.ref, 'tags/v')
