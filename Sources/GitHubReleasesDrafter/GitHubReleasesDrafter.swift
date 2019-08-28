@@ -58,6 +58,14 @@ class GitHubReleasesDrafter {
         return "(・∀・)b"
     }
     
+    func 🔓() -> String {
+        if let draft = getListReleases(tag: tag) {
+            changePublish(draft)
+            return "(・∀・)b"
+        }
+        return "(・A・)"
+    }
+    
     private func requestURL(str: String = "") -> URLRequest {
         var request = URLRequest(url: str.isEmpty
             ? url
@@ -82,6 +90,43 @@ class GitHubReleasesDrafter {
         semaphore.wait()
         
         return draft
+    }
+    
+    private func changePublish(_ draft: Release) {
+        print(#function)
+        
+        var request = requestURL(str: githubApiReleases + "/\(draft.id)")
+        request.httpMethod = "PATCH"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                
+        let encoder = JSONEncoder()
+        if let jsonData = try? encoder.encode(
+            CreateDraft(
+                tag_name: draft.tag_name,
+                target_commitish: draft.target_commitish,
+                name: draft.tag_name,
+                body: draft.body,
+                draft: isDraft,
+                prerelease: draft.prerelease
+            )
+         ) {
+            request.httpBody = jsonData
+            
+            let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                if let data = data, let response = response as? HTTPURLResponse,
+                    response.statusCode == 201 {
+                    let decoder = JSONDecoder()
+                    if let json = try? decoder.decode(Release.self, from: data) {
+                        print(json.name)
+                    }
+                } else {
+                    print(response?.description ?? "")
+                }
+                self.semaphore.signal()
+            }
+            task.resume()
+            self.semaphore.wait()
+        }
     }
     
     private func deletePreviousAsset(id: Int) {
@@ -164,5 +209,18 @@ class GitHubReleasesDrafter {
         self.semaphore.wait()
 
         return asset
+    }
+}
+
+extension String {
+    func toBool() -> Bool {
+        switch self {
+        case "TRUE", "True", "true", "YES", "Yes", "yes", "1":
+            return true
+        case "FALSE", "False", "false", "NO", "No", "no", "0":
+            fallthrough
+        default:
+            return false
+        }
     }
 }

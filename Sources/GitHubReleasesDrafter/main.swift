@@ -4,10 +4,10 @@ let main = command(
     Argument<String>("version"),
     Option("path", default: "", description: "Your releases path"),
     Option("token", default: "", description: "Your token"),
-//    Option("draft", default: "true", description: "Is draft?"),
-//    Option("prerelease", default: "false", description: "Is pre release?"),
+    Option("draft", default: "true", description: "Is draft?"),
+    Option("prerelease", default: "false", description: "Is pre release?"),
     Option("assetFileName", default: "", description: "Your assetFileName")
-) { version, path, token/*, draft, prerelease*/, assetFileName in
+) { version, path, token, draft, prerelease, assetFileName in
     if version.isEmpty || path.isEmpty {
         print("Cannot find required parameter⁉️")
     } else {
@@ -24,10 +24,14 @@ let main = command(
         path: path,
         token: token,
         assetFileName: assetFileName,
-        draft: true,
-        prerelease: false
+        draft: draft.toBool(),
+        prerelease: prerelease.toBool()
     )
-    print(drafter.🚀())
+    if assetFileName.isEmpty && draft.toBool() {
+        print(drafter.🔓())
+    } else {
+        print(drafter.🚀())
+    }
 }
 
 main.run()
