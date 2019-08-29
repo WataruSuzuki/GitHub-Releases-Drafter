@@ -27,7 +27,7 @@ let main = command(
         draft: draft.toBool(),
         prerelease: prerelease.toBool()
     )
-    if assetFileName.isEmpty && draft.toBool() {
+    if assetFileName.isEmpty && !draft.toBool() {
         print(drafter.🔓())
     } else {
         print(drafter.🚀())
