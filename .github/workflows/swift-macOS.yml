@@ -24,6 +24,8 @@ jobs:
       run: |
         VERSION=`echo ${GITHUB_REF//refs\/tags\//}`
         ./build_then_upload.sh $VERSION
+        sleep 5
+        ./draft_to_release.sh $VERSION
       env:
         PUBLISH_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
       if: contains(github.ref, 'tags/v')
