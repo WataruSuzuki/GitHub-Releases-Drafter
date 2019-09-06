@@ -1,4 +1,4 @@
-name: Swift
+name: Swift for macOS
 
 on: [push]
 
@@ -14,12 +14,15 @@ jobs:
 
     - name: Build
       run: swift build -v
+
     - name: Run unit tests
       run: swift test -v
+
     - name: Run integration tests
-      run: ./build_then_upload.sh "nightly"
+      run: ./build_then_upload.sh "nightly-macOS"
       env:
         PUBLISH_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
+
     - name: Upload stable binary
       run: |
         VERSION=`echo ${GITHUB_REF//refs\/tags\//}`
