@@ -25,9 +25,7 @@ jobs:
         echo "export PATH=/usr/share/swift/usr/bin:$PATH" >> ~/.bashrc
         source  ~/.bashrc
         cd ../..
-        swift build -v
 
-    - name: Run integration tests
-      run: ./build_then_upload.sh "nightly-ubuntu"
+        ./build_then_upload.sh "nightly-ubuntu"
       env:
         PUBLISH_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
