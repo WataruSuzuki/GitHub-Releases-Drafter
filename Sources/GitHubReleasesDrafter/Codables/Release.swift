@@ -15,7 +15,9 @@ struct Release: Codable {
     let id: Int
     let node_id: String
     let tag_name: String
+    let target_commitish: String
     let name: String
+    let body: String
     let draft: Bool
     let prerelease: Bool
 
